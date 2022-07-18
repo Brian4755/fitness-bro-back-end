@@ -1,7 +1,7 @@
 import { Profile } from '../models/profile.js'
 import { Workout } from '../models/workout.js'
 
-function index(req, res) {
+export function index(req, res) {
   Profile.find({})
   .then(profiles => res.json(profiles))
   .catch(err => {
@@ -10,9 +10,10 @@ function index(req, res) {
   })
 }
 
-function show(req, res) {
+export function show(req, res) {
   Profile.findById(req.params.id)
-  .populate([{path: 'workouts'}])
+  .populate({path:'meals'})
+  .populate('workouts')
   .then(profile => {
     res.json(profile)
   })
@@ -35,4 +36,4 @@ export function removeFromCollection(req,res){
   })
 }
 
-export { index, show }
+// export { index, show }

@@ -2,7 +2,7 @@ import { Meal } from "../models/meal.js";
 import { Profile } from "../models/profile.js";
 import axios from "axios";
 
-function mealSearch(req, res) {
+export function mealSearch(req, res) {
   const options = {
   method: 'GET',
   url: 'https://nutrition-by-api-ninjas.p.rapidapi.com/v1/nutrition',
@@ -18,22 +18,16 @@ function mealSearch(req, res) {
     console.error(error);
   });
 }
-function addToCollection(req, res) {
-  // req.body.collectedBy = req.user.profile._id
-  Meal.create(req.body)
-  .then((meal)=> {
-    Profile.findById(req.user.profile)
-    .populate('meals')
-    .then(profile => {
-      meal.collectedBy.push(req.user.profile._id)
-      profile.meals.push(meal)
-      profile.save()
-      meal.save()
-      res.json(meal)
-    })
-  })
-}
-export{
-  mealSearch,
-  addToCollection
+export async function addToCollection(req, res) {
+  try{
+    const newMeal = await Meal.create(req.body)
+    console.log("newMealId",newMeal._id)
+    await Profile.updateOne(
+      { _id: req.user.profile },
+      { $push: { meals: newMeal } }
+    )
+    res.json(newMeal)
+  }catch(err){
+    console.log(err)
+  }
 }
