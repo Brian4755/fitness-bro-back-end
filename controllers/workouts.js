@@ -36,26 +36,14 @@ export function show(req, res) {
 }
 
 export function addToCollection(req, res) {
-  // req.body.collectedBy = req.user.profile._id
   Workout.create(req.body)
   .then((workout)=> {
     Profile.findById(req.user.profile)
     .populate('workouts')
     .then(profile => {
-      workout.collectedBy.push(req.user.profile)
       profile.workouts.push(workout)
-      workout.save()
       profile.save()
       res.json(workout)
     })
   })
 }
-
-
-
-export{
-  // workoutSearch,
-  // show,
-  // addToCollection
-}
-

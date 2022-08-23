@@ -6,10 +6,10 @@ const router = Router()
 
 /*---------- Public Routes ----------*/
 router.get('/',workoutsCtrl.workoutSearch)
-
+router.get('/search/:exerciseName', workoutsCtrl.show)
 /*---------- Protected Routes ----------*/
 router.use(decodeUserFromToken)
-router.get('/search/:exerciseName', workoutsCtrl.show)
 router.post('/', checkAuth, workoutsCtrl.addToCollection)
+
 
 export { router }
